@@ -11,29 +11,38 @@ _usage() {
 }
 _sync() {
   local url=$1
-  if [ "${flag_exec}" == "TRUE" ]; then
-    mkdir -p ${HOME}/.ssh
-    rm -f ${HOME}/.ssh/authorized_keys.new
-    for url in "${KEYS_URLS[@]}" ; do
-      wget ${url} -a ${HOME}/.ssh/authorized_keys.new
-    done
-    if [ ! -e ${HOME}/.ssh/authorized_keys ]; then
+
+  mkdir -p ${HOME}/.ssh
+  rm -f ${HOME}/.ssh/authorized_keys.new
+  for url in "${KEYS_URLS[@]}"; do
+    wget ${url} -O - >> ${HOME}/.ssh/authorized_keys.new
+  done
+
+  if [ ! -e ${HOME}/.ssh/authorized_keys ]; then
+    if [ "${flag_exec}" == "TRUE" ]; then
       mv ${HOME}/.ssh/authorized_keys.new ${HOME}/.ssh/authorized_keys
-      echo "create authorized_keys"
-      return
+    else
+      rm -f ${HOME}/.ssh/authorized_keys.new
     fi
-    diff ${HOME}/.ssh/authorized_keys ${HOME}/.ssh/authorized_keys > /dev/null 2>&1
-    if [ $? -eq 1 ]; then
+    echo "create authorized_keys"
+    return
+  fi
+  diff ${HOME}/.ssh/authorized_keys ${HOME}/.ssh/authorized_keys.new > /dev/null 2>&1
+  if [ $? -eq 1 ]; then
+    if [ "${flag_exec}" == "TRUE" ]; then
       mv ${HOME}/.ssh/authorized_keys ${HOME}/.ssh/authorized_keys.bk$(date +"%Y%m%d.%H%M%S.%6N")
       mv ${HOME}/.ssh/authorized_keys.new ${HOME}/.ssh/authorized_keys
       chmod 600 $HOME/.ssh/authorized_keys
-      echo "update authorized_keys"
-      return
+    else
+      rm -f ${HOME}/.ssh/authorized_keys.new
     fi
-
-    echo "no update authorized_keys"
+    echo "update authorized_keys"
+    return
   fi
-  echo "dry run"
+
+  rm -f ${HOME}/.ssh/authorized_keys.new
+  echo "no update authorized_keys"
+  return
 }
 
 # main
@@ -49,4 +58,7 @@ do
   esac
 done
 
+if [ "${flag_exec}" != "TRUE" ]; then
+  echo "***** dry-run *****"
+fi
 _sync "${url}"
