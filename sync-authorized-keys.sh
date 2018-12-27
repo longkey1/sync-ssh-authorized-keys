@@ -3,9 +3,6 @@
 # variables
 ROOT_DIR=$(cd $(dirname $0); pwd)
 
-# KEYS_URLS
-source ${ROOT_DIR}/keys_urls.ini
-
 # functions
 _usage() {
   echo "usage:"
@@ -57,7 +54,20 @@ do
   esac
 done
 
+
 # main
+
+if [ ! -e "${ROOT_DIR}/keys-urls" ]; then
+  echo "not found ${ROOT_DIR}/keys-urls"
+  exit
+fi
+source "${ROOT_DIR}/keys-urls"
+
+if [ ${#KEYS_URLS[*]} -eq 0 ]; then
+  echo "keys_urls is empty"
+  exit
+fi
+
 if [ "${flag_exec}" != "TRUE" ]; then
   echo "***** dry-run *****"
 fi
