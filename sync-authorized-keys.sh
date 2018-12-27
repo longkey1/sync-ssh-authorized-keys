@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 # variables
-KEYS_URLS=("https://github.com/longkey1.keys" "https://github.com/qcmnagai.keys")
+ROOT_DIR=$(cd $(dirname $0); pwd)
+
+# KEYS_URLS
+source ${ROOT_DIR}/keys_urls.ini
 
 # functions
 _usage() {
@@ -10,8 +13,6 @@ _usage() {
   exit 1
 }
 _sync() {
-  local url=$1
-
   mkdir -p ${HOME}/.ssh
   rm -f ${HOME}/.ssh/authorized_keys.new
   for url in "${KEYS_URLS[@]}"; do
@@ -45,8 +46,6 @@ _sync() {
   return
 }
 
-# main
-
 # option
 while getopts x opt
 do
@@ -58,7 +57,8 @@ do
   esac
 done
 
+# main
 if [ "${flag_exec}" != "TRUE" ]; then
   echo "***** dry-run *****"
 fi
-_sync "${url}"
+_sync

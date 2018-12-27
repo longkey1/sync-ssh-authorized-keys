@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+KEYS_URLS=( \
+"https://github.com/example.keys" \
+)

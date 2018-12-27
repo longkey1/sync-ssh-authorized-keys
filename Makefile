@@ -1,23 +1,16 @@
 .DEFAULT_GOAL := help
 SHELL := /bin/bash
-PACKAGE_NAME := sync-authorized-keys
+SCRIPT_FILE := sync-authorized-keys.sh
 PREFIX := /opt
 
-.PHONY: build
-build: ## create install files
-	envsubst < ./etc/cron.d/sync-authorized-keys.dist > ./etc/cron.d/sync-authorized-keys
-
-.PHONY: clean
-clean: ## delete build files
-	rm ./etc/cron.d/sync-authorized-keys
-
 .PHONY: install
-install: ## create install files
-	sudo mv ./etc/cron.d/sync-authorized-keys /etc/cron.d/
+install: ## register to crontab
+	crontab -l | grep $(SCRIPT_FILE) || (crontab -l; echo  "0 */12 * * * $(PWD)/bin/$(SCRIPT_FILE)") | crontab
 
 .PHONY: uninstall
-uninstall: ## delete installed files
-	sudo rm -f /etc/cron.d/sync-authorized-keys
+uninstall: ## remove from crontab
+	crontab -l | grep -v $(SCRIPT_FILE) | crontab
+
 
 
 .PHONY: help
