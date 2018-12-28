@@ -51,13 +51,13 @@ function _sync() {
 
 # main
 
-if [ ! -e "${ROOT_DIR}/keys-urls" ]; then
-  _log "not found ${ROOT_DIR}/keys-urls"
+if [ ! -e "${ROOTDIR}/keys-urls" ]; then
+  _log "not found ${ROOTDIR}/keys-urls"
   exit
 fi
-source "${ROOT_DIR}/keys-urls"
+source "${ROOTDIR}/keys-urls"
 
-if [ ${#KEYS_URLS[*]} -eq 0 ]; then
+if [ ${#KEYSURLS[*]} -eq 0 ]; then
   _log "keys_urls is empty"
   exit
 fi
