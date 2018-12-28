@@ -6,18 +6,18 @@ readonly PROCNAME=${0##*/}
 readonly LOGFILE="$ROOTDIR/${PROCNAME}.log"
 DRY_RUN=""
 if [ $# == 1 ] && [ $1 == "--dry-run" ]; then
-    DRY_RUN="***DRY RUN***"
+    DRY_RUN="***DRY RUN*** "
 fi
 
 # functions
 function _log() {
-  echo -e "$(date '+%Y-%m-%dT%H:%M:%S') ${DRY_RUN} $@"| tee -a ${LOGFILE}
+  echo -e "$(date '+%Y-%m-%dT%H:%M:%S') ${DRY_RUN}$@"| tee -a ${LOGFILE}
 }
 function _sync() {
   mkdir -p ${HOME}/.ssh
   rm -f ${HOME}/.ssh/authorized_keys.new
   for url in "${KEYSURLS[@]}"; do
-    wget ${url} -o ${LOGFILE}  -O - >> ${HOME}/.ssh/authorized_keys.new
+    wget ${url} -q -O - >> ${HOME}/.ssh/authorized_keys.new
   done
 
   if [ ! -e ${HOME}/.ssh/authorized_keys ]; then
