@@ -16,7 +16,7 @@ function _log() {
 function _sync() {
   mkdir -p ${HOME}/.ssh
   rm -f ${HOME}/.ssh/authorized_keys.new
-  for url in "${KEYS_URLS[@]}"; do
+  for url in "${KEYSURLS[@]}"; do
     wget ${url} -o ${LOGFILE}  -O - >> ${HOME}/.ssh/authorized_keys.new
   done
 
