@@ -5,7 +5,7 @@ PREFIX := /opt
 
 .PHONY: install
 install: ## register to crontab
-	@crontab -l | grep $(SCRIPT_FILE) || (crontab -l; echo "5 * * * * $(PWD)/$(SCRIPT_FILE) -x") | crontab
+	@crontab -l | grep $(SCRIPT_FILE) || (crontab -l; echo "5 * * * * $(PWD)/$(SCRIPT_FILE)") | crontab
 
 .PHONY: uninstall
 uninstall: ## remove from crontab
