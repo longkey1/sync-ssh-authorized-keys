@@ -1,5 +1,2 @@
-#!/usr/bin/env bash
-
-KEYSURLS=( \
-"https://github.com/example.keys" \
-)
+https://example.com/path/to/foo.keys
+https://example.com/path/to/bar.keys

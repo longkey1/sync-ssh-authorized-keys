@@ -55,7 +55,7 @@ if [ ! -e "${ROOTDIR}/keys-urls" ]; then
   _log "not found ${ROOTDIR}/keys-urls"
   exit
 fi
-source "${ROOTDIR}/keys-urls"
+KEYSURLS=$(cat ${ROOTDIR}/keys-urls | xargs)
 
 if [ ${#KEYSURLS[*]} -eq 0 ]; then
   _log "keys_urls is empty"
