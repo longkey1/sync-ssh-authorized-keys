@@ -4,6 +4,7 @@
 readonly ROOTDIR=$(cd $(dirname $0); pwd)
 readonly PROCNAME=${0##*/}
 readonly LOGFILE="$ROOTDIR/${PROCNAME}.log"
+readonly NUMBER_OF_LOGFILE_BACKUP_STORES=3
 DRY_RUN=""
 if [ $# == 1 ] && [ $1 == "--dry-run" ]; then
     DRY_RUN="***DRY RUN*** "
@@ -12,6 +13,18 @@ fi
 # functions
 function _log() {
   echo -e "$(date '+%Y-%m-%dT%H:%M:%S') ${DRY_RUN}$@"| tee -a ${LOGFILE}
+}
+function _log_rotate() {
+  if [ -n "${DRY_RUN}" ]; then
+    return
+  fi
+
+  local backup_logfile=${LOGFILE}.$(date +%Y%m --date '1 month ago')
+  local backup_store_number=$(expr ${NUMBER_OF_LOGFILE_BACKUP_STORES} + 1)
+  if [ ! -e ${backup_logfile} ]; then
+    mv ${LOGFILE} ${backup_logfile}
+    find ${LOGFILE}.* | sort -r | tail -n +${backup_store_number} | xargs --no-run-if-empty rm
+  fi
 }
 function _sync() {
   mkdir -p ${HOME}/.ssh
@@ -62,4 +75,9 @@ if [ ${#KEYSURLS[*]} -eq 0 ]; then
   exit
 fi
 
+if [ ! -e "${LOGFILE}" ]; then
+  touch ${LOGFILE}
+fi
+
+_log_rotate
 _sync
