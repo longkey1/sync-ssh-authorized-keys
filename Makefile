@@ -1,15 +1,13 @@
 .DEFAULT_GOAL := help
-SHELL := /bin/bash
-SCRIPT_FILE := sync-authorized-keys.sh
-PREFIX := /opt
+_SCRIPT_FILE := sync-authorized-keys.sh
 
 .PHONY: install
 install: ## register to crontab
-	@crontab -l | grep $(SCRIPT_FILE) || (crontab -l; echo "5 * * * * $(PWD)/$(SCRIPT_FILE)") | crontab
+	@crontab -l | grep $(_SCRIPT_FILE) || (crontab -l; echo "5 * * * * $(PWD)/$(_SCRIPT_FILE)") | crontab
 
 .PHONY: uninstall
 uninstall: ## remove from crontab
-	@crontab -l | grep -v $(SCRIPT_FILE) | crontab
+	@crontab -l | grep -v $(_SCRIPT_FILE) | crontab
 
 
 
